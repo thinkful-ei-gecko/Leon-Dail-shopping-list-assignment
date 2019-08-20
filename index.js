@@ -151,7 +151,7 @@ function handleSearchResults() {
 //function takes anything in the search bar and immediately filters the list of shopping
 //items and then redisplays the shopping list
 function handleSearchQuery() {
-  $('.js-search-bar').change(e => {
+  $('.search-bar').on('input','.js-search-bar', e => {
     renderShoppingList();
   });
 }
