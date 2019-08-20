@@ -41,8 +41,11 @@ function renderShoppingList() {
 
   // set up a copy of the store's items in a local variable that we will reassign to a new
   // version if any filtering of the list occurs
-  let filteredItems = STORE.items;
-
+  let filteredItems = handleSearchResults();
+  if (!filteredItems) {
+    filteredItems = STORE.items;
+  }
+  console.log(`filteredItems: ${filteredItems}`);
   // if the `hideCompleted` property is true, then we want to reassign filteredItems to a version
   // where ONLY items with a "checked" property of false are included
   if (STORE.hideCompleted) {
@@ -137,6 +140,22 @@ function handleToggleHideFilter() {
   });
 }
 
+//this function takes the input data and filters anything that matches
+//Then, it will return the results
+function handleSearchResults() {
+  let searchTerm = $('.js-search-bar').val();
+  let newResults = STORE.items.filter(e => e.name.includes(searchTerm));
+  return newResults;
+}
+
+//function takes anything in the search bar and immediately filters the list of shopping
+//items and then redisplays the shopping list
+function handleSearchQuery() {
+  $('.js-search-bar').change(e => {
+    renderShoppingList();
+  });
+}
+
 // this function will be our callback when the page loads. it's responsible for
 // initially rendering the shopping list, and activating our individual functions
 // that handle new item submission and user clicks on the "check" and "delete" buttons
@@ -147,6 +166,7 @@ function handleShoppingList() {
   handleItemCheckClicked();
   handleDeleteItemClicked();
   handleToggleHideFilter();
+  handleSearchQuery();
 }
 
 // when the page loads, call `handleShoppingList`
