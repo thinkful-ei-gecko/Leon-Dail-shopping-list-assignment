@@ -38,7 +38,7 @@ button:hover {
   padding: 20px;
 }
 
-.shopping-item {
+.shopping-item, .edit-input  {
   display: block;
   color: grey;
   font-style: italic;

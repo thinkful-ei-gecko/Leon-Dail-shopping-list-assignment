@@ -2,22 +2,33 @@
 
 const STORE = {
   items: [
-    {id: cuid(), name: "apples", checked: false},
-    {id: cuid(), name: "oranges", checked: false},
-    {id: cuid(), name: "milk", checked: true},
-    {id: cuid(), name: "bread", checked: false}
+    {id: cuid(), name: "apples", checked: false, edit: false},
+    {id: cuid(), name: "oranges", checked: false, edit: false},
+    {id: cuid(), name: "milk", checked: true, edit: false},
+    {id: cuid(), name: "bread", checked: false, edit: false}
   ],
   hideCompleted: false
 };
 
+
 function generateItemElement(item) {
+  let returnValue = '';
+  if (item.edit === true) { 
+    returnValue = `
+      <form id="edit-submit-form">
+          <input type="text" value="${item.name}" class="edit-input"></input>
+      </form>`; 
+  }
+  else {
+    returnValue = `<span class="shopping-item js-shopping-item ${item.checked ? "shopping-item__checked" : ''}">${item.name}</span>`;
+  }
   return `
-    <li data-item-id="${item.id}">
-      <span class="shopping-item js-shopping-item ${item.checked ? "shopping-item__checked" : ''}">${item.name}</span>
-      <div class="shopping-item-controls">
-        <button class="shopping-item-edit js-item-edit">
-            <span class="button-label">edit</span>
-        </button>
+   <li data-item-id="${item.id}">
+  ${returnValue}
+          <div class="shopping-item-controls">
+          <button class="shopping-item-edit js-item-edit">
+              <span class="button-label">edit</span>
+          </button>
         <button class="shopping-item-toggle js-item-toggle">
             <span class="button-label">check</span>
         </button>
@@ -27,7 +38,6 @@ function generateItemElement(item) {
       </div>
     </li>`;
 }
-
 
 function generateShoppingItemsString(shoppingList) {
   console.log("Generating shopping list element");
@@ -48,7 +58,6 @@ function renderShoppingList() {
   if (!filteredItems) {
     filteredItems = STORE.items;
   }
-  console.log(`filteredItems: ${filteredItems}`);
   // if the `hideCompleted` property is true, then we want to reassign filteredItems to a version
   // where ONLY items with a "checked" property of false are included
   if (STORE.hideCompleted) {
@@ -66,7 +75,7 @@ function renderShoppingList() {
 
 function addItemToShoppingList(itemName) {
   console.log(`Adding "${itemName}" to shopping list`);
-  STORE.items.push({name: itemName, checked: false});
+  STORE.items.push({id: cuid(), name: itemName, checked: false});
 }
 
 function handleNewItemSubmit() {
@@ -92,6 +101,7 @@ function getItemIdFromElement(item) {
     .closest('li')
     .data('item-id');
 }
+
 
 function handleItemCheckClicked() {
   $('.js-shopping-list').on('click', `.js-item-toggle`, event => {
@@ -161,21 +171,25 @@ function handleSearchQuery() {
 
 //Listener for when the 'edit' button is clicked
 function handleItemEdit() {
-  //event delegation to the `ul` element
   $('.js-shopping-list').on('click','.js-item-edit', e => {
-    editItem();
+    console.log('edit button clicked');
+    let id = getItemIdFromElement(event.target);
+    let item = STORE.items.find(item => item.id === id);
+    item.edit = !item.edit;
+    renderShoppingList();
   });
 }
 
-//takes the item
-function editItem() {
-  //takes the item name
-  //changes its display name to an input box and greys out the 'edit' box
-  //allows user to change the title and then submit by either
-  //clicking outside of the form or by clicking 'submit beside it'
-  //Then, the database is updated to the new name,
-  //render is called again
-
+function handleItemEditSubmit() {
+  $('.js-shopping-list').on('submit', '#edit-submit-form', event => {
+    event.preventDefault();
+    let id = getItemIdFromElement(event.currentTarget);
+    console.log(id);
+    let item = STORE.items.find(item => item.id === id);
+    item.edit = !item.edit;
+    item.name = $('.edit-input').val();
+    renderShoppingList();
+  });
 }
 
 // this function will be our callback when the page loads. it's responsible for
@@ -190,6 +204,7 @@ function handleShoppingList() {
   handleToggleHideFilter();
   handleSearchQuery();
   handleItemEdit();
+  handleItemEditSubmit();
 }
 
 // when the page loads, call `handleShoppingList`
