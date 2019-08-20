@@ -15,6 +15,9 @@ function generateItemElement(item) {
     <li data-item-id="${item.id}">
       <span class="shopping-item js-shopping-item ${item.checked ? "shopping-item__checked" : ''}">${item.name}</span>
       <div class="shopping-item-controls">
+        <button class="shopping-item-edit js-item-edit">
+            <span class="button-label">edit</span>
+        </button>
         <button class="shopping-item-toggle js-item-toggle">
             <span class="button-label">check</span>
         </button>
@@ -156,6 +159,25 @@ function handleSearchQuery() {
   });
 }
 
+//Listener for when the 'edit' button is clicked
+function handleItemEdit() {
+  //event delegation to the `ul` element
+  $('.js-shopping-list').on('click','.js-item-edit',e => {
+    editItem();
+  });
+}
+
+//takes the item
+function editItem() {
+  //takes the item name
+  //changes its display name to an input box
+  //allows user to change the title and then submit by either
+  //clicking outside of the form or by clicking 'submit beside it'
+  //Then, the database is updated to the new name,
+  //render is called again
+
+}
+
 // this function will be our callback when the page loads. it's responsible for
 // initially rendering the shopping list, and activating our individual functions
 // that handle new item submission and user clicks on the "check" and "delete" buttons
@@ -167,6 +189,7 @@ function handleShoppingList() {
   handleDeleteItemClicked();
   handleToggleHideFilter();
   handleSearchQuery();
+  handleItemEdit();
 }
 
 // when the page loads, call `handleShoppingList`
