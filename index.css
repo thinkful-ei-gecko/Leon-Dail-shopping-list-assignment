@@ -49,3 +49,8 @@ button:hover {
 .shopping-item__checked {
   text-decoration: line-through;
 }
+
+button.inEdit {
+  background-color: gray;
+  border: 1px gray solid;
+}

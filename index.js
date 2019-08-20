@@ -162,7 +162,7 @@ function handleSearchQuery() {
 //Listener for when the 'edit' button is clicked
 function handleItemEdit() {
   //event delegation to the `ul` element
-  $('.js-shopping-list').on('click','.js-item-edit',e => {
+  $('.js-shopping-list').on('click','.js-item-edit', e => {
     editItem();
   });
 }
@@ -170,7 +170,7 @@ function handleItemEdit() {
 //takes the item
 function editItem() {
   //takes the item name
-  //changes its display name to an input box
+  //changes its display name to an input box and greys out the 'edit' box
   //allows user to change the title and then submit by either
   //clicking outside of the form or by clicking 'submit beside it'
   //Then, the database is updated to the new name,
